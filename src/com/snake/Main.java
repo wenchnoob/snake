@@ -1,10 +1,10 @@
 package com.snake;
 
-import com.snake.config.ConfigManager;
 import com.snake.ui.GamePane;
 import com.snake.ui.Screen;
 import com.snake.ui.characters.Pellet;
 import com.snake.ui.characters.SnakeHead;
+import com.snake.util.Utility;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -16,7 +16,6 @@ public class Main {
 
     public static void main(String...args) {
         ExecutorService es = Executors.newCachedThreadPool();
-        ConfigManager config = ConfigManager.getInstance();
 
         SwingUtilities.invokeLater(() -> {
             GamePane gamePane = GamePane.getInstance();
@@ -37,7 +36,11 @@ public class Main {
 
             Screen screen = new Screen();
             screen.add(gamePane);
+            gamePane.setFocusable(true);
+            screen.pack();
+            screen.setLocationRelativeTo(null);
             screen.setVisible(true);
+            gamePane.requestFocusInWindow();
         });
 
         es.submit(Main::move);
@@ -47,6 +50,10 @@ public class Main {
     public static void move() {
         while(true) {
             SnakeHead.getInstance().forward();
+
+            SwingUtilities.invokeLater(() -> {
+                GamePane.getInstance().repaint();
+            });
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -57,7 +64,6 @@ public class Main {
 
     public static void play() {
         Pellet p = Pellet.Factory.random();
-        GamePane.getInstance().repaint();
         while(true) {
             if (Utility.rectangularCollision(p, SnakeHead.getInstance())) {
                 p.handleCollision(SnakeHead.getInstance());

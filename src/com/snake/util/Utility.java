@@ -1,10 +1,8 @@
-package com.snake;
+package com.snake.util;
 
 import com.snake.ui.Drawable;
 
 public class Utility {
-
-
     public static boolean rectangularCollision(Drawable obj1, Drawable obj2) {
         int x1 = obj1.getX();
         int x2 = obj1.getX() + obj1.getW();
